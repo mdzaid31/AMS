@@ -41,7 +41,7 @@ if (isset($_SESSION["username"]) && $_SESSION["role"])
 
 while($row2 = $result2->fetch_assoc()){
     $subject= $row2["Subject_ID"];
-    $sql="INSERT into $subject (Student_ID, Student_Name) VALUES ('$student_ID','$fullName')";
+    $sql="INSERT into $subject (Student_ID, Full_Name) VALUES ('$student_ID','$fullName')";
     $result = $conn->query($sql);
 }
 

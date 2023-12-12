@@ -218,34 +218,6 @@ else {
       margin-top: 70px; /* Adjust this value to leave space for the horizontal navbar */
     }
     </style>
-         <script>
-        // Function to filter columns based on the selected month
-        function filterColumns() {
-            var selectedMonth = document.getElementById('month').value;
-            var table = document.getElementById('attendanceTable');
-            var headerRow = table.rows[0];
-
-            // Loop through each cell in the header row starting from the third cell
-            for (var j = 2; j < headerRow.cells.length; j++) {
-                var columnName = headerRow.cells[j].textContent || headerRow.cells[j].innerText;
-
-                // Show or hide the column based on the selected month
-                if (selectedMonth === 'all' || columnName.includes(selectedMonth)) {
-                    headerRow.cells[j].style.display = '';
-                    // Loop through each row and show/hide the corresponding cell
-                    for (var i = 1; i < table.rows.length; i++) {
-                        table.rows[i].cells[j].style.display = '';
-                    }
-                } else {
-                    headerRow.cells[j].style.display = 'none';
-                    // Loop through each row and show/hide the corresponding cell
-                    for (var i = 1; i < table.rows.length; i++) {
-                        table.rows[i].cells[j].style.display = 'none';
-                    }
-                }
-            }
-        }
-    </script>
 </head>
 <body>
 <div class="navbar-vertical">
@@ -264,7 +236,7 @@ else {
             </a>
         </li>
         <li>
-            <a href="index.php">
+            <a href="index.html">
             <ion-icon name="log-out-outline"></ion-icon>
             <span class="title">Log Out</span>
             </a>
@@ -276,11 +248,15 @@ else {
   <?php
   // Check if the username is set in the session
   if (isset($_SESSION['username'])) {
-      $username = $_SESSION['username'];
 
-      if(isset($_GET['Subject_ID'])) {
-        $Subject_ID = $_GET['Subject_ID'];
-  
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        // Retrieve values from the previous page
+        $subjectID = $_POST["Subject_ID"];
+        $attendanceDate = $_POST["attendanceDate"];
+    
+        // Output the values (you can modify this part based on your requirements)
+        echo "<p class='text-3xl'>Attendance Date: <b>$attendanceDate</b></p><br>";
+      
       // Fetch other details from the database based on the username
       $servername = "localhost";
       $username_db = "zaid";
@@ -293,89 +269,51 @@ else {
       // Check connection
       if ($conn->connect_error) {
           die("Connection failed: " . $conn->connect_error);
-      }
-      $sql="SELECT * from subjects where Subject_ID='$Subject_ID'";
-      $result = $conn->query($sql);
-      $row = $result->fetch_assoc();
-      echo'
-      <center><div style="border: 2px solid black;" class="p-2"><p class="text-3xl"><b>'.$row['Subject_Name'].'</b></p></div></center><br>
-      ';
-
-      echo'
-      <div style="margin-top: 20px; border:2px solid black; width:400px;" class="p-4">
-    <label for="month">Select Month:</label>
-    <select style="width:300px;" id="month" onchange="filterColumns()">
-        <option value="all">All Months</option>
-        <option value="10">October 2023</option>
-        <option value="11">November 2023</option>
-        <option value="12">December 2023</option>
-        <option value="01">January 2023</option>
-    </select>
-</div><br>
-      ';
-
-      $sql2 = "SELECT * FROM $Subject_ID";
-        $result2 = $conn->query($sql2);
-
-        if ($result2->num_rows > 0) {
-            // Display details in a tabular form
-            echo '<table id="attendanceTable" border="1" style="border-collapse: collapse; width: 100%;">
-                    <tr>';
-            
-            // Loop through the result to dynamically create columns
-            while ($fieldinfo = $result2->fetch_field()) {
-                $columnNames[] = $fieldinfo->name;
-                echo '<th style="border: 4px solid black; padding: 8px;" class="text-2xl">' . $fieldinfo->name . '</th>';
-            }
-            
-            echo '</tr>';
-
-            while ($row2 = $result2->fetch_assoc()) {
-                echo '<tr>';
-                // Loop through the columns dynamically
-                foreach ($row2 as $value) {
-                    // Set cell color based on the value
-                    $cellColor = '';
-                    if ($value === 'Present') {
-                        $cellColor = 'background-color: lightgreen;';
-                    } elseif ($value === 'Absent') {
-                        $cellColor = 'background-color: lightcoral;';
-                    } elseif ($value === 'Late') {
-                        $cellColor = 'background-color: #e9f542;';
-                    }
-                
-                    // Echo the table cell with the specified style
-                    echo '<td style="border: 2px solid black; padding: 10px; ' . $cellColor . '">' . $value . '</td>';
-                }
-                echo '</tr>';
-            }
-
-            echo '</table>';
-        } else {
-            echo 'No data found for the specified Subject_ID.';
         }
-        echo'
-        <div style="margin-top: 20px; width:600px; border: 2px solid black;" class="p-4">
-        <form action="add_attendance.php" method="post">
-        <p class="text-xl">Mark Attendance</p>
-        <br>
-            <label for="attendanceDate">Select Date:</label>
-            <select style="width:300px; "name="attendanceDate" id="attendanceDate">
-            <option></option>
-            ';
-            for ($i = 2; $i < count($columnNames); $i++) {
-                echo '<option value="' . $columnNames[$i] . '">' . $columnNames[$i] . '</option>';
-            }
+        $sql = "SELECT Full_Name, $attendanceDate as attendance_status FROM $subjectID";
+        $result = $conn->query($sql);
         
-         echo'
-            </select>
-            <input type="hidden" name="Subject_ID" value="'.$Subject_ID.'">
-            <input type="submit" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" value="Mark Attendance">
-        </form>
-    </div>';
-        $conn->close();
-    }
-}
+        // Check if there are results
+        if ($result->num_rows > 0) {
+            // Display the form
+            echo '<form action="process_attendance.php" method="POST">';
+            echo '<div style="width:600px; display: grid; grid-template-columns: auto auto; border:3px solid black;" class="p-4">';
+
+            // Column 1: Student Names
+            echo '<div style="width:160px;">';
+            while ($row = $result->fetch_assoc()) {
+                echo '<input style="height:45px;" value="' . $row['Full_Name'] . '"><br><br>';
+            }
+            echo '</div>';
+
+            // Column 2: Select Boxes
+            echo '<div>';
+            $result->data_seek(0); // Reset the result pointer
+            while ($row = $result->fetch_assoc()) {
+                echo '<select style="height:45px; width:300px;" name="attendance[' . $row['Full_Name'] . ']">
+        
+                       <option></option>
+                       <option value="Present">Present</option>
+                       <option value="Absent">Absent</option>
+                       <option value="Late">Late</option>
+                       </select><br><br>';
+                }
+
+            }
+            echo '</div>';
+
+            // Close the grid and form
+            echo '<input type="hidden" name="Subject_ID" value="'.$subjectID.'">';
+            echo'<input type="hidden" name="attendanceDate" value="'.$_POST["attendanceDate"].'">';
+            echo '<center><input type="submit" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" value="Mark Attendance"></center>';
+            echo '</div>';
+            echo '</form>';
+        } else {
+            echo 'No data found for the specified Subject_ID and attendance date.';
+        }
+          
+        } 
+
   ?>
 </div>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
