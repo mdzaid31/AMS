@@ -1,0 +1,259 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background-color: black;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+header {
+  position: relative;
+  background: hsla(0, 0%, 0%, .6);
+  padding: 1rem 0;
+  z-index: 999;
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: min(90%, 800px);
+  margin-inline: auto;
+  color: #fff;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+}
+
+nav a {
+  text-decoration: none;
+  color: #fff;
+}
+
+nav a:hover {
+  color: #4FC3F7;
+}
+
+.hamburger {
+  display: none;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  
+  .toggle {
+    transition: ease-in-out 550ms;
+    transform: translate(0px);
+    opacity: 1;
+    display: block;
+  }
+  
+  .header-container {
+    width: 100%;
+    padding: 0 1rem;
+  }
+  
+  nav ul {
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: hsla(0, 0%, 0%, .5);
+    backdrop-filter: blur(10px);
+    transform: translateX(-500px);
+    opacity: 0;
+  }
+  
+  nav li {
+    padding: 1rem;
+    cursor: pointer;
+  }
+  
+  nav li:hover {
+    background: hsla(0, 0%, 0%, .7);
+  }
+  
+  .hamburger {
+    display: block; 
+  }
+}
+.square
+{
+	position: relative;
+	width: 525px;
+	height: 525px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.square i
+{
+	position: absolute;
+	inset: 0;
+	border: 2px solid #fff;
+	transition: 0.5s;
+}
+.square i:nth-child(1)
+{
+	border-radius: 50% 45% 50% 40% / 41% 44% 56% 59%;
+	animation: animate 6s linear infinite;
+}
+.square i:nth-child(2)
+{
+	border-radius: 45% 50% 55% 59%/50% 55% 47% 59%;
+	animation: animate 4s linear infinite;
+}
+.square i:nth-child(3)
+{
+	border-radius: 50% 55% 45% 59%/50% 45% 50% 40%;
+	animation: animate2 10s linear infinite;
+}
+.square:hover i
+{
+	border: 6px solid var(--clr);
+	filter: drop-shadow(0 0 20px var(--clr));
+}
+@keyframes animate
+{
+	0%
+	{
+		transform: rotate(0deg);
+	}
+	100%
+	{
+		transform: rotate(360deg);
+	}
+}
+@keyframes animate2
+{
+	0%
+	{
+		transform: rotate(360deg);
+	}
+	100%
+	{
+		transform: rotate(0deg);
+	}
+}
+.login 
+{
+	position: absolute;
+	width: 300px;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	gap: 20px;
+}
+.login h2 
+{
+	font-size: 2em;
+	color: #fff;
+}
+.login .inputBx 
+{
+	position: relative;
+	width: 100%;
+}
+.login .inputBx input 
+{
+	position: relative;
+	width: 100%;
+	padding: 12px 20px;
+	background: transparent;
+	border: 2px solid #fff;
+	border-radius: 40px;
+	font-size: 1.2em;
+	color: #fff;
+	box-shadow: none;
+	outline: none;
+}
+.login .inputBx input[type="submit"]
+{
+	width: 100%;
+	background: #0078ff;
+	background: linear-gradient(45deg,#ff357a,#fff172);
+	border: none;
+	cursor: pointer;
+}
+.login .inputBx input::placeholder 
+{
+	color: rgba(255,255,255,0.75);
+}
+.login .links
+{
+	position: relative;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 20px;
+}
+.login .links a 
+{
+	color: #fff;
+	text-decoration: none;
+}
+
+.inputBx label {
+	display: block;
+	text-align: left;
+	margin-bottom: 5px;
+	color: white;
+}
+
+.inputBx select {
+	width: 100%;
+	padding: 10px;
+	font-size: 16px;
+	border: none;
+	border-bottom: 2px solid #3498db; /* Add an underline effect */
+	background-color: transparent;
+	color: white;
+	border-radius: 0;
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	cursor: pointer;
+	transition: border-bottom 0.3s ease-in-out;
+}
+
+.inputBx select:hover,
+.inputBx select:focus {
+	border-bottom: 2px solid #e74c3c; 
+}
+
+.inputBx select option {
+	background-color: #333;
+}
+
+.inputBx select option:hover {
+	background-color: #555;
+}
+
+.inputBx select::-ms-expand {
+	display: none;
+}
+
+.inputBx select:focus {
+	outline: none; 
+}
+
+
+.Custom-border select::contents{
+
+	position: top;
+}
